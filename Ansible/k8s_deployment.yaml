@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mc-app
-        image: kadarlasanthosh/santhosh_repo:3
+        image: kadarlasanthosh/santhosh_repo:4
         ports:
         - containerPort: 8080
 ---

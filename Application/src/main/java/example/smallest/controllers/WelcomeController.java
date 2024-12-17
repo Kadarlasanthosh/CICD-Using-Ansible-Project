@@ -16,6 +16,6 @@ public class WelcomeController {
 		
 		
 		
-		return "Congratulations DevOps Engineers!!! AWS DevOps is a recesion-proof IT Career, All the best for your Bright future"; //"application/json" mean this is a text not a redirect
+		return "Automating a CICD project using Jenkins pipeline, Automating a provisioning AWS resources using Terraform, Deploying them using Ansible in  Kubernetes CLuster "; //"application/json" mean this is a text not a redirect
 	}
 }

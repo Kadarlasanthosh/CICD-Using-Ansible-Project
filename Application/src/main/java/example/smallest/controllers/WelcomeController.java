@@ -16,6 +16,6 @@ public class WelcomeController {
 		
 		
 		
-		return "Automating a CICD project using Jenkins pipeline, Automating a provisioning AWS resources using Terraform, Deploying them using Ansible in  Kubernetes Cluster"; //"application/json" mean this is a text not a redirect
+		return "Automating a CICD project using Jenkins pipeline, Automating provisioning of AWS resources using Terraform, Deploying them using Ansible in  Kubernetes Cluster"; //"application/json" mean this is a text not a redirect
 	}
 }

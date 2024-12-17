@@ -1,75 +1,69 @@
-  pipeline {
+pipeline {
     agent any
-
-
-    stages {
-        stage('Checkout Code') {
-            steps {
-                echo 'scm git'
-                git branch: 'main', url: 'https://github.com/devopstraininghub/REALTIMEPROJECT.git'
-            }
+        
+    stages{
+        stage ('Checkout code') {
+            steps{
+            echo 'scm git'
+            git branch: 'main', url: 'https://github.com/Kadarlasanthosh/CICD-Using-Ansible-Project.git'
         }
-    	
-
-        stage('BuildingJar') {
-            steps {
-                echo 'maven build'
-                sh 'cd Application && mvn clean package'
-            }
         }
-		
-	
-		
-        stage('sonar') {
-            steps {
-                echo 'scanning project'
-                sh 'ls -ltr'
+        stage ('Building jar') {
+            steps{
+            echo 'Maven Build'
+            sh 'cd Application && mvn clean package'
+        }
+        }
+        stage ('Sonar Code Inspection') {
+            steps{
+            echo 'Scanning Project'
+             sh 'ls -ltr'
                 sh '''cd Application && mvn sonar:sonar \\
-                      -Dsonar.host.url=http://3.88.43.182:9000 \\
-                      -Dsonar.login=squ_f7d38d9efecde942052011718376e7479ae66764'''
-            }
-    	}
-       stage('Build docker image'){
+                      -Dsonar.host.url=http://34.205.140.172:9000 \\
+                      -Dsonar.login=sqa_88ecec1e9f1c60c432369a79bda398638a44a627'''
+        }
+        }
+        
+        stage('Build docker image'){
             steps{
                 script{
                     echo 'docker image build'
-					sh 'cd Application && docker build -t devopshubg333/k8s:${BUILD_NUMBER} .'
+					sh 'cd Application && docker build -t kadarlasanthosh/santhosh_repo:${BUILD_NUMBER} .'
                 }
             }
         }
-		
-       stage('docker image scan'){
+        
+          stage('docker image scan'){
         steps{
-            sh "trivy image devopshubg333/k8s:${BUILD_NUMBER}"
+            sh "trivy image kadarlasanthosh/santhosh_repo:${BUILD_NUMBER}"
         }
     }		
  
-
-		 stage('Push image to Hub'){
+         stage('Push image to Hub'){
             steps{
                 script{
                    withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
-                   sh 'docker login -u devopshubg333 -p ${dockerhub}'
+                   sh 'docker login -u kadarlasanthosh -p ${dockerhub}'
 
               }
-                   sh 'docker push devopshubg333/k8s:${BUILD_NUMBER}'
+                   sh 'docker push kadarlasanthosh/santhosh_repo:${BUILD_NUMBER}'
                 }
             }
         }
-		
-      stage('Update kubernetes Deployment manifest File') {
+        
+        stage('Update kubernetes Deployment manifest File') {
         environment {
-            GIT_REPO_NAME = "REALTIMEPROJECT"
-            GIT_USER_NAME = "devopstraininghub"
+            GIT_REPO_NAME = "CICD-Using-Ansible-Project"
+            GIT_USER_NAME = "Kadarlasanthosh"
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
-                    git config user.email "madhu@gmail.com"
-                    git config user.name "madhu"
+                    git config user.email "santhosh.nitr@gmail.com"
+                    git config user.name "Santhosh"
                     BUILD_NUMBER=${BUILD_NUMBER}
                   
-                    sed -i "s/k8s:.*/k8s:${BUILD_NUMBER}/g" Ansible/k8s_deployment.yaml
+                    sed -i "s/santhosh_repo:.*/santhosh_repo:${BUILD_NUMBER}/g" Ansible/k8s_deployment.yaml
                     git add .
                     git commit -m "Update deployment image tag to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
@@ -78,7 +72,7 @@
         }
     }
 
-    stage('k8s Deployment using ansible'){
+         stage('k8s Deployment using ansible'){
             steps{
               
                     script{
@@ -87,5 +81,6 @@
                 }
             }
         }
-}
+      
+    }
 }
